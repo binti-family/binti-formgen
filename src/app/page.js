@@ -197,6 +197,8 @@ export default function Home() {
     setReactGraphqlWrapper(tagger(formData, reactFormGraphqlWrapperTemplate));
   };
 
+  const textAreaStyle = { height: "500px", width: "700px" };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -228,13 +230,13 @@ export default function Home() {
       {/* <div>Form Template:</div>
       <div>{template}</div> */}
       <div>Mutation Template:</div>
-      <textarea value={mutation} readOnly />
+      <textarea style={textAreaStyle} value={mutation} readOnly />
       <div>Model Type:</div>
-      <textarea value={modelType} readOnly />
+      <textarea style={textAreaStyle} value={modelType} readOnly />
       <div>React Form:</div>
-      <textarea value={reactForm} readOnly />
+      <textarea style={textAreaStyle} value={reactForm} readOnly />
       <div>React GraphQL Create Wrapper:</div>
-      <textarea value={reactGraphqlWrapper} readOnly />
+      <textarea style={textAreaStyle} value={reactGraphqlWrapper} readOnly />
     </>
   );
 }
