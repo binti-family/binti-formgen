@@ -4,13 +4,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import tagger from "./tagger";
 
-const formTemplate = `
-`;
-
 const mutationArgumentTemplate =
   "argument(:{argumentName}, {argumentType}, required: false)";
 
-const mutationTemplate = `
+const createMutationTemplate = `
 module Mutations
   class Create{ModelName} < Mutations::BaseMutation
     {arguments}
@@ -22,6 +19,31 @@ module Mutations
       authorize(policy_scope(::{ModelName}).find(args[:id]), :create?)
 
       result = Services::{ModelName}s::Create.call(**args)
+
+      resultBody = result.body[:{model_name}]
+
+      { {model_name}: }
+
+    rescue ActiveRecord::RecordInvalid => e
+      Honeybadger.notify(e)
+      raise GraphQL::ExecutionError, "Invalid Record: #{e.message}"
+    end
+  end
+end
+`;
+
+const updateMutationTemplate = `
+module Mutations
+  class Update{ModelName} < Mutations::BaseMutation
+    {arguments}
+
+    # response field
+    field(:{model_name}, Types::{ModelName}, null: false)
+
+    def resolve(**args)
+      authorize(policy_scope(::{ModelName}).find(args[:id]), :update?)
+
+      result = Services::{ModelName}s::Update.call(**args)
 
       resultBody = result.body[:{model_name}]
 
@@ -79,10 +101,11 @@ const {ModelName}Form = ({ formState, setFormAttribute }) => (
 export default {ModelName}Form;
 `;
 
-const reactFormGraphqlWrapperTemplate = `import { gql, useMutation } from "@apollo/client";
+const reactCreateGraphqlWrapperTemplate = `import { gql, useMutation } from "@apollo/client";
 import { Actions, LoadingOverlay, SurfaceForm } from "@heart/components";
 import useBintiForm from "@heart/components/forms/useBintiForm";
 import _ from "lodash";
+import {ModelName}Form from "./{ModelName}Form";
 
 import { translationWithRoot } from "@components/T";
 
@@ -136,6 +159,90 @@ Create{ModelName}.propTypes = {};
 export default Create{ModelName};
 `;
 
+const reactUpdateGraphqlWrapperTemplate = `import { gql, useMutation, useQuery } from "@apollo/client";
+import { Actions, LoadingOverlay, SurfaceForm } from "@heart/components";
+import useBintiForm from "@heart/components/forms/useBintiForm";
+import _ from "lodash";
+import { useState } from "react";
+
+import BintiPropTypes from "@lib/BintiPropTypes";
+import preventDefault from "@lib/preventDefault";
+
+import {ModelName}Form from "./{ModelName}Form";
+
+import { translationWithRoot } from "@components/T";
+
+const { t } = translationWithRoot("{model_name}");
+
+const {ModelName}Fragment = gql\`
+  fragment {ModelName} on {ModelName} {
+    id
+    {argumentNames}
+  }
+\`;
+
+const Update{ModelName} = ({ id }) => {
+  const { data, loading } = useQuery(
+    gql\`
+      \${{modelName}Fragment}
+      query Update{ModelName}($id: ID!) {
+        {modelName}(id: $id) {
+          ..{ModelName}
+        }
+      }
+    \`,
+    {
+      variables: { id },
+    }
+  );
+
+  const [update{ModelName}, { loading: mutationLoading }] = useMutation(
+    gql\`
+      \${{modelName}Fragment}
+      mutation Update{ModelName}($input: Update{ModelName}Input!) {
+        update{ModelName}(input: $input) {
+          {modelName} {
+            ..{ModelName}
+          }
+        }
+      }
+    \`
+  );
+
+  const { formState, setFormAttribute } = useBintiForm(data?.{modelName});
+
+  return (
+    <LoadingOverlay active={loading || mutationLoading}>
+      <SurfaceForm
+        title={t("title")}
+        actions={<Actions />}
+        onSubmit={preventDefault(() =>
+          update{ModelName}({
+            variables: {
+              input: {
+                ..._.omit(formState, "__typename"),
+              },
+            },
+          })
+        )}
+      >
+        <{ModelName}Form
+          id={id}
+          formState={formState}
+          setFormAttribute={setFormAttribute}
+        />
+      </SurfaceForm>
+    </LoadingOverlay>
+  );
+};
+
+Update{ModelName}.propTypes = {
+  id: BintiPropTypes.ID,
+};
+
+export default Update{ModelName};
+`;
+
 const buildArguments = (argumentCount, formData, template, separator) =>
   range(0, argumentCount)
     .map((index) =>
@@ -154,12 +261,15 @@ const buildArguments = (argumentCount, formData, template, separator) =>
 const toSnakeCase = (s) => s.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
 
 export default function Home() {
-  const [template, setTemplate] = useState("");
-  const [mutation, setMutation] = useState("");
+  const [createMutation, setCreateMutation] = useState("");
+  const [updateMutation, setUpdateMutation] = useState("");
   const [argumentCount, setArgumentCount] = useState(1);
   const [modelType, setModelType] = useState("");
   const [reactForm, setReactForm] = useState("");
-  const [reactGraphqlWrapper, setReactGraphqlWrapper] = useState("");
+  const [reactCreateGraphqlWrapper, setReactCreateGraphqlWrapper] =
+    useState("");
+  const [reactUpdateGraphqlWrapper, setReactUpdateGraphqlWrapper] =
+    useState("");
 
   const { register, handleSubmit } = useForm();
 
@@ -170,6 +280,9 @@ export default function Home() {
         formData.modelName.charAt(0).toUpperCase() +
         formData.modelName.slice(1),
       model_name: toSnakeCase(formData.modelName),
+      argumentNames: range(0, argumentCount)
+        .map((index) => formData[`argument${index}Name`])
+        .join("\n    "),
       arguments: buildArguments(
         argumentCount,
         formData,
@@ -190,11 +303,16 @@ export default function Home() {
       ),
     };
 
-    setTemplate(tagger(formData, formTemplate));
-    setMutation(tagger(formData, mutationTemplate));
+    setCreateMutation(tagger(formData, createMutationTemplate));
+    setUpdateMutation(tagger(formData, updateMutationTemplate));
     setModelType(tagger(formData, graphqlTypeTemplate));
     setReactForm(tagger(formData, reactFormComponentTemplate));
-    setReactGraphqlWrapper(tagger(formData, reactFormGraphqlWrapperTemplate));
+    setReactCreateGraphqlWrapper(
+      tagger(formData, reactCreateGraphqlWrapperTemplate)
+    );
+    setReactUpdateGraphqlWrapper(
+      tagger(formData, reactUpdateGraphqlWrapperTemplate)
+    );
   };
 
   const textAreaStyle = { height: "500px", width: "700px" };
@@ -206,7 +324,6 @@ export default function Home() {
           type="text"
           placeholder="Model name"
           {...register("modelName")}
-          value="TestModel"
         />
         {range(0, argumentCount).map((index) => (
           <div key={index}>
@@ -227,16 +344,26 @@ export default function Home() {
         </button>
         <button type="submit">Submit</button>
       </form>
-      {/* <div>Form Template:</div>
-      <div>{template}</div> */}
-      <div>Mutation Template:</div>
-      <textarea style={textAreaStyle} value={mutation} readOnly />
+      <div>Create Mutation Template:</div>
+      <textarea style={textAreaStyle} value={createMutation} readOnly />
+      <div>Update Mutation Template:</div>
+      <textarea style={textAreaStyle} value={updateMutation} readOnly />
       <div>Model Type:</div>
       <textarea style={textAreaStyle} value={modelType} readOnly />
       <div>React Form:</div>
       <textarea style={textAreaStyle} value={reactForm} readOnly />
       <div>React GraphQL Create Wrapper:</div>
-      <textarea style={textAreaStyle} value={reactGraphqlWrapper} readOnly />
+      <textarea
+        style={textAreaStyle}
+        value={reactCreateGraphqlWrapper}
+        readOnly
+      />
+      <div>React GraphQL Update Wrapper:</div>
+      <textarea
+        style={textAreaStyle}
+        value={reactUpdateGraphqlWrapper}
+        readOnly
+      />
     </>
   );
 }
