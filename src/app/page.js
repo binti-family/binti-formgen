@@ -303,15 +303,15 @@ export default function Home() {
       ),
     };
 
-    setCreateMutation(tagger(formData, createMutationTemplate));
-    setUpdateMutation(tagger(formData, updateMutationTemplate));
-    setModelType(tagger(formData, graphqlTypeTemplate));
-    setReactForm(tagger(formData, reactFormComponentTemplate));
+    setCreateMutation(tagger(formData, createMutationTemplate).trim());
+    setUpdateMutation(tagger(formData, updateMutationTemplate).trim());
+    setModelType(tagger(formData, graphqlTypeTemplate).trim());
+    setReactForm(tagger(formData, reactFormComponentTemplate).trim());
     setReactCreateGraphqlWrapper(
-      tagger(formData, reactCreateGraphqlWrapperTemplate)
+      tagger(formData, reactCreateGraphqlWrapperTemplate).trim()
     );
     setReactUpdateGraphqlWrapper(
-      tagger(formData, reactUpdateGraphqlWrapperTemplate)
+      tagger(formData, reactUpdateGraphqlWrapperTemplate).trim()
     );
   };
 
