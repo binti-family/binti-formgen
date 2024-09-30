@@ -11,7 +11,7 @@ module Mutations
       {model_name} = policy_scope(::{ModelName}).find(args[:id])
       authorize({model_name}, :update?)
 
-      result = Services::{ModelName}s::Update.call({model_name}, **args)
+      result = Services::{ModelName}s::Update.call({model_name}:, params: args)
 
       { {model_name}: result.body[:{model_name}] }
 
