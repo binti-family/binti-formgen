@@ -14,6 +14,8 @@ import graphqlFieldTemplate from "./templates/graphqlFieldTemplate";
 import mutationArgumentTemplate from "./templates/mutationArgumentTemplate";
 import reactInputDateTemplate from "./templates/reactInputDateTemplate";
 import reactInputCheckboxTemplate from "./templates/reactInputCheckboxTemplate";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 const buildArguments = (argumentCount, formData, template, separator) =>
   range(0, argumentCount)
@@ -37,6 +39,8 @@ const inputTypesToTemplates = {
   "GraphQL::Types::ISO8601Date": reactInputDateTemplate,
   Boolean: reactInputCheckboxTemplate,
 };
+
+const zip = new JSZip();
 
 export default function Home() {
   const [createMutation, setCreateMutation] = useState("");
@@ -143,6 +147,13 @@ export default function Home() {
     },
   ];
 
+  const generateZip = () => {
+    files.forEach((file) => zip.file(file.path, file.contents));
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, "binti-formgen.zip");
+    });
+  };
+
   return (
     <>
       <form
@@ -184,6 +195,7 @@ export default function Home() {
           Add Argument
         </button>
         <button type="submit">Submit</button>
+        <button onClick={generateZip}> Download Zip </button>
       </form>
       {files.map((file) => (
         <div key={file.title}>
