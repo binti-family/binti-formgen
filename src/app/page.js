@@ -51,7 +51,7 @@ export default function Home() {
 
   const { register, handleSubmit, getValues } = useForm();
 
-  const model_name = toSnakeCase(getValues("modelName"));
+  const model_name = toSnakeCase(getValues("modelName") || "");
 
   const onSubmit = (formData) => {
     formData = {
@@ -106,7 +106,17 @@ export default function Home() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        style={{
+          margin: "5px 0",
+          display: "flex",
+          gap: "5px",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+        }}
+      >
         <input
           type="text"
           placeholder="Model name"
