@@ -50,20 +50,22 @@ const Update{ModelName} = ({ id }) => {
 
   const { formState, setFormAttribute } = useBintiForm(data?.{modelName});
 
+  const onSubmit = preventDefault(() =>
+    update{ModelName}({
+      variables: {
+        input: {
+          ..._.omit(formState, "__typename"),
+        },
+      },
+    })
+  );
+
   return (
     <LoadingOverlay active={loading || mutationLoading}>
       <SurfaceForm
         title={t("title")}
         actions={<Actions />}
-        onSubmit={preventDefault(() =>
-          update{ModelName}({
-            variables: {
-              input: {
-                ..._.omit(formState, "__typename"),
-              },
-            },
-          })
-        )}
+        onSubmit={onSubmit}
       >
         <{ModelName}Form
           id={id}

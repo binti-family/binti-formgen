@@ -49,7 +49,9 @@ export default function Home() {
   const [reactUpdateGraphqlWrapper, setReactUpdateGraphqlWrapper] =
     useState("");
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
+
+  const model_name = toSnakeCase(getValues("modelName"));
 
   const onSubmit = (formData) => {
     formData = {
@@ -57,7 +59,7 @@ export default function Home() {
       ModelName:
         formData.modelName.charAt(0).toUpperCase() +
         formData.modelName.slice(1),
-      model_name: toSnakeCase(formData.modelName),
+      model_name,
       argumentNames: range(0, argumentCount)
         .map((index) => formData[`argument${index}Name`])
         .join("\n    "),
@@ -135,20 +137,35 @@ export default function Home() {
         <button type="submit">Submit</button>
       </form>
       <div>Create Mutation Template:</div>
+      <div>path: app/graphql/mutations/create_{model_name}.rb</div>
       <textarea style={textAreaStyle} value={createMutation} readOnly />
       <div>Update Mutation Template:</div>
+      <div>path: app/graphql/mutations/update_{model_name}.rb</div>
       <textarea style={textAreaStyle} value={updateMutation} readOnly />
       <div>Model Type:</div>
+      <div>path: app/graphql/types/{model_name}.rb</div>
       <textarea style={textAreaStyle} value={modelType} readOnly />
       <div>React Form:</div>
+      <div>
+        path: app/javascript/components/{model_name}/{getValues("modelName")}
+        Form.js
+      </div>
       <textarea style={textAreaStyle} value={reactForm} readOnly />
       <div>React GraphQL Create Wrapper:</div>
+      <div>
+        path: app/javascript/components/{model_name}/Create
+        {getValues("modelName")}.js
+      </div>
       <textarea
         style={textAreaStyle}
         value={reactCreateGraphqlWrapper}
         readOnly
       />
       <div>React GraphQL Update Wrapper:</div>
+      <div>
+        path: app/javascript/components/{model_name}/Update
+        {getValues("modelName")}.js
+      </div>
       <textarea
         style={textAreaStyle}
         value={reactUpdateGraphqlWrapper}

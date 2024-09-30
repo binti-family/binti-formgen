@@ -27,20 +27,22 @@ const Create{ModelName} = () => {
 
   const [create{ModelName}, { loading }] = useMutation(create{ModelName}Mutation);
 
+  const onSubmit = preventDefault(() =>
+    create{ModelName}({
+      variables: {
+        input: {
+          ..._.omit(formState, "__typename"),
+        },
+      },
+    })
+  );
+
   return (
     <LoadingOverlay active={loading}>
       <SurfaceForm
         title={t("{model_name}.title")}
         actions={<Actions />}
-        onSubmit={preventDefault(() =>
-          create{ModelName}({
-            variables: {
-              input: {
-                ..._.omit(formState, "__typename"),
-              },
-            },
-          })
-        )}
+        onSubmit={onSubmit}
       >
         <{ModelName}Form
           formState={formState}
