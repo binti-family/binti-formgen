@@ -197,6 +197,23 @@ export default function Home() {
         <button type="submit">Submit</button>
         <button onClick={generateZip}> Download Zip </button>
       </form>
+      <div>Line to add to app/graphql/types/query_type.rb:</div>
+      <textarea
+        style={{ height: "30px", width: "500px" }}
+        value={`query(Queries::${getValues("modelName")})`}
+      />
+      <div>Lines to add to app/graphql/types/mutation_type.rb:</div>
+      <textarea
+        style={{ height: "50px", width: "700px" }}
+        value={`field(:create_${model_name}, mutation: Mutations::Create${getValues(
+          "modelName"
+        )})
+field(:update_${model_name}, mutation: Mutations::Update${getValues(
+          "modelName"
+        )})
+        `}
+      />
+      <div></div>
       {files.map((file) => (
         <div key={file.title}>
           <div>{file.title}:</div>
