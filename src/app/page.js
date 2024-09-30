@@ -57,14 +57,14 @@ export default function Home() {
 
   const { register, handleSubmit, getValues } = useForm();
 
-  const model_name = toSnakeCase(getValues("modelName") || "");
+  const modelName = getValues("modelName");
+  const model_name = toSnakeCase(modelName || "");
+  const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
   const onSubmit = (formData) => {
     formData = {
       ...formData,
-      ModelName:
-        formData.modelName.charAt(0).toUpperCase() +
-        formData.modelName.slice(1),
+      ModelName,
       model_name,
       argumentNames: range(0, argumentCount)
         .map((index) => formData[`argument${index}Name`])
@@ -134,23 +134,17 @@ export default function Home() {
     },
     {
       title: "React Form",
-      path: `app/javascript/components/${model_name}/${getValues(
-        "modelName"
-      )}Form.js`,
+      path: `app/javascript/components/${model_name}/${ModelName}Form.js`,
       contents: reactForm,
     },
     {
       title: "React GraphQL Create Wrapper",
-      path: `app/javascript/components/${model_name}/Create${getValues(
-        "modelName"
-      )}.js`,
+      path: `app/javascript/components/${model_name}/Create${ModelName}.js`,
       contents: reactCreateGraphqlWrapper,
     },
     {
       title: "React GraphQL Update Wrapper",
-      path: `app/javascript/components/${model_name}/Update${getValues(
-        "modelName"
-      )}.js`,
+      path: `app/javascript/components/${model_name}/Update${ModelName}.js`,
       contents: reactUpdateGraphqlWrapper,
     },
   ];
@@ -208,17 +202,13 @@ export default function Home() {
       <div>Line to add to app/graphql/types/query_type.rb:</div>
       <textarea
         style={{ height: "30px", width: "500px" }}
-        value={`query(Queries::${getValues("modelName")})`}
+        value={`query(Queries::${ModelName})`}
       />
       <div>Lines to add to app/graphql/types/mutation_type.rb:</div>
       <textarea
         style={{ height: "50px", width: "700px" }}
-        value={`field(:create_${model_name}, mutation: Mutations::Create${getValues(
-          "modelName"
-        )})
-field(:update_${model_name}, mutation: Mutations::Update${getValues(
-          "modelName"
-        )})
+        value={`field(:create_${model_name}, mutation: Mutations::Create${ModelName})
+    field(:update_${model_name}, mutation: Mutations::Update${ModelName})
         `}
       />
       <div></div>

@@ -23,10 +23,10 @@ const {ModelName}Fragment = gql\`
 const Update{ModelName} = ({ id }) => {
   const { data, loading } = useQuery(
     gql\`
-      \${{modelName}Fragment}
+      \${{ModelName}Fragment}
       query Update{ModelName}($id: ID!) {
         {modelName}(id: $id) {
-          ..{ModelName}
+          ...{ModelName}
         }
       }
     \`,
@@ -37,11 +37,11 @@ const Update{ModelName} = ({ id }) => {
 
   const [update{ModelName}, { loading: mutationLoading }] = useMutation(
     gql\`
-      \${{modelName}Fragment}
+      \${{ModelName}Fragment}
       mutation Update{ModelName}($input: Update{ModelName}Input!) {
         update{ModelName}(input: $input) {
           {modelName} {
-            ..{ModelName}
+            ...{ModelName}
           }
         }
       }
