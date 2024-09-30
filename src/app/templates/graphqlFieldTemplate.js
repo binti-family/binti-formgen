@@ -1,1 +1,1 @@
-export default `field(:{argumentName}, Types::{argumentType}, null: true)`;
+export default `field(:{argumentName}, {argumentType}, null: true)`;

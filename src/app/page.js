@@ -12,6 +12,8 @@ import reactUpdateGraphqlWrapperTemplate from "./templates/reactUpdateGraphqlWra
 import reactInputTextTemplate from "./templates/reactInputTextTemplate";
 import graphqlFieldTemplate from "./templates/graphqlFieldTemplate";
 import mutationArgumentTemplate from "./templates/mutationArgumentTemplate";
+import reactInputDateTemplate from "./templates/reactInputDateTemplate";
+import reactInputCheckboxTemplate from "./templates/reactInputCheckboxTemplate";
 
 const buildArguments = (argumentCount, formData, template, separator) =>
   range(0, argumentCount)
@@ -29,6 +31,12 @@ const buildArguments = (argumentCount, formData, template, separator) =>
     .join(separator);
 
 const toSnakeCase = (s) => s.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
+
+const inputTypesToTemplates = {
+  String: reactInputTextTemplate,
+  "GraphQL::Types::ISO8601Date": reactInputDateTemplate,
+  Boolean: reactInputCheckboxTemplate,
+};
 
 export default function Home() {
   const [createMutation, setCreateMutation] = useState("");
@@ -65,12 +73,19 @@ export default function Home() {
         graphqlFieldTemplate,
         "\n    "
       ),
-      reactInputs: buildArguments(
-        argumentCount,
-        formData,
-        reactInputTextTemplate,
-        "    "
-      ),
+      reactInputs: range(0, argumentCount)
+        .map((index) =>
+          tagger(
+            {
+              argumentName: formData[`argument${index}Name`],
+              argument_name: toSnakeCase(formData[`argument${index}Name`]),
+              argumentType: formData[`argument${index}Type`],
+              argument_type: toSnakeCase(formData[`argument${index}Type`]),
+            },
+            inputTypesToTemplates[formData[`argument${index}Type`]]
+          )
+        )
+        .join("\n    "),
     };
 
     setCreateMutation(tagger(formData, createMutationTemplate).trim());
@@ -102,11 +117,16 @@ export default function Home() {
               placeholder={`Argument ${index} name`}
               {...register(`argument${index}Name`)}
             />
-            <input
-              type="text"
-              placeholder={`Argument ${index} type`}
+            <select
               {...register(`argument${index}Type`)}
-            />
+              placeholder={`Argument ${index} type`}
+            >
+              {Object.keys(inputTypesToTemplates).map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
           </div>
         ))}
         <button onClick={() => setArgumentCount(argumentCount + 1)}>
