@@ -16,6 +16,7 @@ import reactInputDateTemplate from "./templates/reactInputDateTemplate";
 import reactInputCheckboxTemplate from "./templates/reactInputCheckboxTemplate";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import queryTemplate from "./templates/queryTemplate";
 
 const buildArguments = (argumentCount, formData, template, separator) =>
   range(0, argumentCount)
@@ -52,6 +53,7 @@ export default function Home() {
     useState("");
   const [reactUpdateGraphqlWrapper, setReactUpdateGraphqlWrapper] =
     useState("");
+  const [query, setQuery] = useState("");
 
   const { register, handleSubmit, getValues } = useForm();
 
@@ -94,6 +96,7 @@ export default function Home() {
         .join("\n    "),
     };
 
+    setQuery(tagger(formData, queryTemplate).trim());
     setCreateMutation(tagger(formData, createMutationTemplate).trim());
     setUpdateMutation(tagger(formData, updateMutationTemplate).trim());
     setModelType(tagger(formData, graphqlTypeTemplate).trim());
@@ -109,6 +112,11 @@ export default function Home() {
   const textAreaStyle = { height: "500px", width: "700px" };
 
   const files = [
+    {
+      title: "Query Template",
+      path: `app/graphql/queries/${model_name}.rb`,
+      contents: query,
+    },
     {
       title: "Create Mutation Template",
       path: `app/graphql/mutations/create_${model_name}.rb`,

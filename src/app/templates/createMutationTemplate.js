@@ -6,8 +6,8 @@ module Mutations
     # response field
     field(:{model_name}, Types::{ModelName}, null: false)
 
-    def resolve(**args)
-      authorize(policy_scope(::{ModelName}).find(args[:id]), :create?)
+    def resolve()
+      authorize(::{ModelName}, :create?)
 
       result = Services::{ModelName}s::Create.call(**args)
 
