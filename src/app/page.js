@@ -57,8 +57,8 @@ export default function Home() {
 
   const { register, handleSubmit, getValues } = useForm();
 
-  const modelName = getValues("modelName");
-  const model_name = toSnakeCase(modelName || "");
+  const modelName = getValues("modelName") || "";
+  const model_name = toSnakeCase(modelName);
   const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
   const onSubmit = (formData) => {

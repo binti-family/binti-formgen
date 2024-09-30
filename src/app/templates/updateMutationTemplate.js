@@ -8,9 +8,10 @@ module Mutations
     field(:{model_name}, Types::{ModelName}, null: false)
 
     def resolve(**args)
-      authorize(policy_scope(::{ModelName}).find(args[:id]), :update?)
+      {model_name} = policy_scope(::{ModelName}).find(args[:id])
+      authorize({model_name}, :update?)
 
-      result = Services::{ModelName}s::Update.call(**args)
+      result = Services::{ModelName}s::Update.call({model_name}, **args)
 
       resultBody = result.body[:{model_name}]
 
