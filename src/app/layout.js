@@ -13,7 +13,7 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "Binti Formgen 💙",
+  title: "Binti Formgen",
   description:
     "Generates needed graphql and React files for basic Create/Update forms",
 };
