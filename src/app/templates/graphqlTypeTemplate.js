@@ -10,4 +10,5 @@ module Types
     {fields}
   end
 end
+
 `;

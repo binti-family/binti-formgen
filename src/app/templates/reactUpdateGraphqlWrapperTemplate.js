@@ -82,4 +82,5 @@ Update{ModelName}.propTypes = {
 };
 
 export default Update{ModelName};
+
 `;

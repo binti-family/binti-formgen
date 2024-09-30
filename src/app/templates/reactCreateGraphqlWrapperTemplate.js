@@ -56,4 +56,5 @@ const Create{ModelName} = () => {
 Create{ModelName}.propTypes = {};
 
 export default Create{ModelName};
+
 `;

@@ -17,4 +17,5 @@ const {ModelName}Form = ({ formState, setFormAttribute }) => (
 };
 
 export default {ModelName}Form;
+
 `;
