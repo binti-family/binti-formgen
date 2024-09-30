@@ -13,9 +13,7 @@ module Mutations
 
       result = Services::{ModelName}s::Update.call({model_name}, **args)
 
-      resultBody = result.body[:{model_name}]
-
-      { {model_name}: }
+      { {model_name}: result.body[:{model_name}] }
 
     rescue ActiveRecord::RecordInvalid => e
       Honeybadger.notify(e)
