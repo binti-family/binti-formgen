@@ -1,6 +1,7 @@
 export default `
 module Mutations
   class Update{ModelName} < Mutations::BaseMutation
+    argument(:id, ID, required: true)
     {arguments}
 
     # response field
