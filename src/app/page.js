@@ -104,6 +104,45 @@ export default function Home() {
 
   const textAreaStyle = { height: "500px", width: "700px" };
 
+  const files = [
+    {
+      title: "Create Mutation Template",
+      path: `app/graphql/mutations/create_${model_name}.rb`,
+      contents: createMutation,
+    },
+    {
+      title: "Update Mutation Template",
+      path: `app/graphql/mutations/update_${model_name}.rb`,
+      contents: updateMutation,
+    },
+    {
+      title: "Model Type",
+      path: `app/graphql/types/${model_name}.rb`,
+      contents: modelType,
+    },
+    {
+      title: "React Form",
+      path: `app/javascript/components/${model_name}/${getValues(
+        "modelName"
+      )}Form.js`,
+      contents: reactForm,
+    },
+    {
+      title: "React GraphQL Create Wrapper",
+      path: `app/javascript/components/${model_name}/Create${getValues(
+        "modelName"
+      )}.js`,
+      contents: reactCreateGraphqlWrapper,
+    },
+    {
+      title: "React GraphQL Update Wrapper",
+      path: `app/javascript/components/${model_name}/Update${getValues(
+        "modelName"
+      )}.js`,
+      contents: reactUpdateGraphqlWrapper,
+    },
+  ];
+
   return (
     <>
       <form
@@ -146,41 +185,13 @@ export default function Home() {
         </button>
         <button type="submit">Submit</button>
       </form>
-      <div>Create Mutation Template:</div>
-      <div>path: app/graphql/mutations/create_{model_name}.rb</div>
-      <textarea style={textAreaStyle} value={createMutation} readOnly />
-      <div>Update Mutation Template:</div>
-      <div>path: app/graphql/mutations/update_{model_name}.rb</div>
-      <textarea style={textAreaStyle} value={updateMutation} readOnly />
-      <div>Model Type:</div>
-      <div>path: app/graphql/types/{model_name}.rb</div>
-      <textarea style={textAreaStyle} value={modelType} readOnly />
-      <div>React Form:</div>
-      <div>
-        path: app/javascript/components/{model_name}/{getValues("modelName")}
-        Form.js
-      </div>
-      <textarea style={textAreaStyle} value={reactForm} readOnly />
-      <div>React GraphQL Create Wrapper:</div>
-      <div>
-        path: app/javascript/components/{model_name}/Create
-        {getValues("modelName")}.js
-      </div>
-      <textarea
-        style={textAreaStyle}
-        value={reactCreateGraphqlWrapper}
-        readOnly
-      />
-      <div>React GraphQL Update Wrapper:</div>
-      <div>
-        path: app/javascript/components/{model_name}/Update
-        {getValues("modelName")}.js
-      </div>
-      <textarea
-        style={textAreaStyle}
-        value={reactUpdateGraphqlWrapper}
-        readOnly
-      />
+      {files.map((file) => (
+        <div key={file.title}>
+          <div>{file.title}:</div>
+          <div>path: {file.path}</div>
+          <textarea style={textAreaStyle} value={file.contents} readOnly />
+        </div>
+      ))}
     </>
   );
 }
