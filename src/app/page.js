@@ -3,20 +3,20 @@ import { range } from "ramda";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import tagger from "./tagger";
-import createMutationTemplate from "./templates/createMutationTemplate";
-import updateMutationTemplate from "./templates/updateMutationTemplate";
-import graphqlTypeTemplate from "./templates/graphqlTypeTemplate";
-import reactFormComponentTemplate from "./templates/reactFormComponentTemplate";
-import reactCreateGraphqlWrapperTemplate from "./templates/reactCreateGraphqlWrapperTemplate";
-import reactUpdateGraphqlWrapperTemplate from "./templates/reactUpdateGraphqlWrapperTemplate";
-import reactInputTextTemplate from "./templates/reactInputTextTemplate";
-import graphqlFieldTemplate from "./templates/graphqlFieldTemplate";
-import mutationArgumentTemplate from "./templates/mutationArgumentTemplate";
-import reactInputDateTemplate from "./templates/reactInputDateTemplate";
-import reactInputCheckboxTemplate from "./templates/reactInputCheckboxTemplate";
+import createMutationTemplate from "./templates/graphql/createMutationTemplate";
+import updateMutationTemplate from "./templates/graphql/updateMutationTemplate";
+import graphqlTypeTemplate from "./templates/graphql/typeTemplate";
+import reactFormComponentTemplate from "./templates/react/formComponentTemplate";
+import reactCreateGraphqlWrapperTemplate from "./templates/react/createGraphqlWrapperTemplate";
+import reactUpdateGraphqlWrapperTemplate from "./templates/react/updateGraphqlWrapperTemplate";
+import reactInputTextTemplate from "./templates/react/inputTextTemplate";
+import graphqlFieldTemplate from "./templates/graphql/fieldTemplate";
+import mutationArgumentTemplate from "./templates/graphql/mutationArgumentTemplate";
+import reactInputDateTemplate from "./templates/react/inputDateTemplate";
+import reactInputCheckboxTemplate from "./templates/react/inputCheckboxTemplate";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import queryTemplate from "./templates/queryTemplate";
+import queryTemplate from "./templates/graphql/queryTemplate";
 
 const buildArguments = (argumentCount, formData, template, separator) =>
   range(0, argumentCount)

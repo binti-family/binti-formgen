@@ -2,14 +2,13 @@ export default `import { gql, useMutation, useQuery } from "@apollo/client";
 import { Actions, LoadingOverlay, SurfaceForm } from "@heart/components";
 import useBintiForm from "@heart/components/forms/useBintiForm";
 import _ from "lodash";
-import { useState } from "react";
+
+import { translationWithRoot } from "@components/T";
 
 import BintiPropTypes from "@lib/BintiPropTypes";
 import preventDefault from "@lib/preventDefault";
 
 import {ModelName}Form from "./{ModelName}Form";
-
-import { translationWithRoot } from "@components/T";
 
 const { t } = translationWithRoot("{model_name}");
 
