@@ -21,7 +21,10 @@ export default function Argumentz({ control, register }) {
   return (
     <>
       {fields.map((argument, index) => (
-        <div key={`${argument.name}-${argument.type}`}>
+        <div
+          key={`${argument.name}-${argument.type}`}
+          style={{ display: "flex", gap: "5px" }}
+        >
           <input
             type="text"
             placeholder={`argument_${index}_name`}

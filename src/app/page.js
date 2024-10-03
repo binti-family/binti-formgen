@@ -59,37 +59,35 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div
+      style={{
+        margin: "5px",
+        display: "flex",
+        gap: "5px",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+      }}
+    >
+      <div>
+        <input
+          type="text"
+          placeholder="model_name"
+          {...register("model_name")}
+        />
+        <span muted>(use snake_case for all inputs)</span>
+      </div>
+      <Argumentz control={control} register={register} />
       <div
         style={{
-          margin: "5px 0",
           display: "flex",
-          gap: "5px",
-          flexDirection: "column",
           justifyContent: "flex-start",
-          alignItems: "flex-start",
+          gap: "20px",
+          width: "700px",
         }}
       >
-        <div>
-          <input
-            type="text"
-            placeholder="model_name"
-            {...register("model_name")}
-          />
-          <span muted>(use snake_case for all inputs)</span>
-        </div>
-        <Argumentz control={control} register={register} />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-start",
-            gap: "20px",
-            width: "700px",
-          }}
-        >
-          <button onClick={generateZip}>💾 Download Zip</button>
-          <button onClick={clearForm}>🗑️ Clear Form</button>
-        </div>
+        <button onClick={generateZip}>💾 Download Zip</button>
+        <button onClick={clearForm}>🗑️ Clear Form</button>
       </div>
       <div>Line to add to app/graphql/types/query_type.rb:</div>
       <textarea
@@ -104,6 +102,6 @@ export default function Home() {
         `}
       />
       <Files model_name={model_name} argumentz={argumentz} />
-    </>
+    </div>
   );
 }
