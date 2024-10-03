@@ -15,7 +15,7 @@ const { t } = translationWithRoot("{model_name}");
 const {ModelName}Fragment = gql\`
   fragment {ModelName} on {ModelName} {
     id
-    {argumentNames}
+    {argumentNamesString}
   }
 \`;
 

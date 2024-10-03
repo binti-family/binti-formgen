@@ -3,12 +3,13 @@ import { range } from "ramda";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import tagger from "./tagger";
-import createMutationTemplate from "./templates/graphql/createMutationTemplate";
-import updateMutationTemplate from "./templates/graphql/updateMutationTemplate";
+import graphqlCreateMutationTemplate from "./templates/graphql/createMutationTemplate";
+import graphqlUpdateMutationTemplate from "./templates/graphql/updateMutationTemplate";
+import graphqlDeleteMutationTemplate from "./templates/graphql/deleteMutationTemplate";
 import graphqlTypeTemplate from "./templates/graphql/typeTemplate";
 import reactFormComponentTemplate from "./templates/react/formComponentTemplate";
-import reactCreateGraphqlWrapperTemplate from "./templates/react/createGraphqlWrapperTemplate";
-import reactUpdateGraphqlWrapperTemplate from "./templates/react/updateGraphqlWrapperTemplate";
+import reactGraphqlCreateWrapperTemplate from "./templates/react/graphql/createWrapperTemplate";
+import reactGraphqlUpdateWrapperTemplate from "./templates/react/graphql/updateWrapperTemplate";
 import reactInputTextTemplate from "./templates/react/inputTextTemplate";
 import graphqlFieldTemplate from "./templates/graphql/fieldTemplate";
 import mutationArgumentTemplate from "./templates/graphql/mutationArgumentTemplate";
@@ -23,8 +24,8 @@ const buildArguments = (argumentCount, formData, template, separator) =>
     .map((index) =>
       tagger(
         {
-          argumentName: formData[`argument${index}Name`],
-          argument_name: toSnakeCase(formData[`argument${index}Name`]),
+          argumentName: formData[`argument_${index}_name`],
+          argument_name: toSnakeCase(formData[`argument_${index}_name`]),
           argumentType: formData[`argument${index}Type`],
           argument_type: toSnakeCase(formData[`argument${index}Type`]),
         },
@@ -34,41 +35,49 @@ const buildArguments = (argumentCount, formData, template, separator) =>
     .join(separator);
 
 const toSnakeCase = (s) => s.replace(/([a-z])([A-Z])/g, "$1_$2").toLowerCase();
+const toCamelCase = (s) => s.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
 
 const inputTypesToTemplates = {
   String: reactInputTextTemplate,
   "GraphQL::Types::ISO8601Date": reactInputDateTemplate,
   Boolean: reactInputCheckboxTemplate,
+  Integer: reactInputTextTemplate,
 };
 
 const zip = new JSZip();
 
-export default function Home() {
-  const [createMutation, setCreateMutation] = useState("");
-  const [updateMutation, setUpdateMutation] = useState("");
-  const [argumentCount, setArgumentCount] = useState(1);
-  const [modelType, setModelType] = useState("");
-  const [reactForm, setReactForm] = useState("");
-  const [reactCreateGraphqlWrapper, setReactCreateGraphqlWrapper] =
-    useState("");
-  const [reactUpdateGraphqlWrapper, setReactUpdateGraphqlWrapper] =
-    useState("");
-  const [query, setQuery] = useState("");
+const onSubmit =
+  (getValues, setFilledTemplates, argumentCount) => (formData) => {
+    const model_name = getValues("model_name");
+    const modelName = toCamelCase(model_name || "");
+    const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+    const argumentz = range(0, argumentCount).map((index) => ({
+      name: formData[`argument_${index}_name`],
+      type: formData[`argument${index}Type`],
+    }));
 
-  const { register, handleSubmit, getValues } = useForm();
+    const url = new URL(window.location.href);
+    url.search = `modelName=${modelName}&arguments=${JSON.stringify(
+      argumentz
+    )}`;
+    window.history.pushState({}, "", url);
 
-  const modelName = getValues("modelName") || "";
-  const model_name = toSnakeCase(modelName);
-  const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+    const argumentNames = range(0, argumentCount).map((index) =>
+      formData[`argument_${index}_name`]
+        .replace(/([a-z])_([A-Z])/g, "$1U$2")
+        .toLowerCase()
+    );
 
-  const onSubmit = (formData) => {
     formData = {
       ...formData,
+      modelName,
       ModelName,
       model_name,
-      argumentNames: range(0, argumentCount)
-        .map((index) => formData[`argument${index}Name`])
-        .join("\n    "),
+      argument_names: range(0, argumentCount).map(
+        (index) => formData[`argument_${index}_name`]
+      ),
+      argumentNames,
+      argumentNamesString: argumentNames.join("\n    "),
       arguments: buildArguments(
         argumentCount,
         formData,
@@ -85,8 +94,8 @@ export default function Home() {
         .map((index) =>
           tagger(
             {
-              argumentName: formData[`argument${index}Name`],
-              argument_name: toSnakeCase(formData[`argument${index}Name`]),
+              argumentName: formData[`argument_${index}_name`],
+              argument_name: toSnakeCase(formData[`argument_${index}_name`]),
               argumentType: formData[`argument${index}Type`],
               argument_type: toSnakeCase(formData[`argument${index}Type`]),
             },
@@ -96,18 +105,57 @@ export default function Home() {
         .join("\n    "),
     };
 
-    setQuery(tagger(formData, queryTemplate).trim());
-    setCreateMutation(tagger(formData, createMutationTemplate).trim());
-    setUpdateMutation(tagger(formData, updateMutationTemplate).trim());
-    setModelType(tagger(formData, graphqlTypeTemplate).trim());
-    setReactForm(tagger(formData, reactFormComponentTemplate).trim());
-    setReactCreateGraphqlWrapper(
-      tagger(formData, reactCreateGraphqlWrapperTemplate).trim()
-    );
-    setReactUpdateGraphqlWrapper(
-      tagger(formData, reactUpdateGraphqlWrapperTemplate).trim()
+    setFilledTemplates(
+      Object.entries({
+        query: queryTemplate,
+        graphqlCreateMutation: graphqlCreateMutationTemplate,
+        graphqlUpdateMutation: graphqlUpdateMutationTemplate,
+        graphqlDeleteMutation: graphqlDeleteMutationTemplate,
+        graphqlModelType: graphqlTypeTemplate,
+        reactForm: reactFormComponentTemplate,
+        reactGraphqlCreateWrapper: reactGraphqlCreateWrapperTemplate,
+        reactGraphqlUpdateWrapper: reactGraphqlUpdateWrapperTemplate,
+      }).reduce(
+        (acc, [key, template]) => ({
+          ...acc,
+          [key]: tagger(formData, template).trim(),
+        }),
+        {}
+      )
     );
   };
+
+export default function Home() {
+  const queryParameters = window.location.search
+    .replace("?", "")
+    .split("&")
+    .map((param) => param.split("="))
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+  const argumentz = JSON.parse(unescape(queryParameters.arguments));
+
+  const [argumentCount, setArgumentCount] = useState(argumentz.length);
+  const [filledTemplates, setFilledTemplates] = useState({});
+
+  const defaultValues = {
+    ...argumentz.reduce(
+      (acc, arg, index) => ({
+        ...acc,
+        [`argument_${index}_name`]: arg.name,
+        [`argument_${index}_type`]: arg.type,
+      }),
+      {}
+    ),
+    model_name: toSnakeCase(queryParameters.modelName || ""),
+  };
+
+  console.log(defaultValues);
+
+  const { register, handleSubmit, getValues } = useForm({ defaultValues });
+
+  const model_name = getValues("model_name");
+  const modelName = toCamelCase(model_name || "");
+  const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
   const textAreaStyle = { height: "500px", width: "700px" };
 
@@ -115,37 +163,42 @@ export default function Home() {
     {
       title: "Query Template",
       path: `app/graphql/queries/${model_name}.rb`,
-      contents: query,
+      contents: filledTemplates.query,
     },
     {
       title: "Create Mutation Template",
       path: `app/graphql/mutations/create_${model_name}.rb`,
-      contents: createMutation,
+      contents: filledTemplates.graphqlCreateMutation,
     },
     {
       title: "Update Mutation Template",
       path: `app/graphql/mutations/update_${model_name}.rb`,
-      contents: updateMutation,
+      contents: filledTemplates.graphqlUpdateMutation,
+    },
+    {
+      title: "Delete Mutation Template",
+      path: `app/graphql/mutations/delete_${model_name}.rb`,
+      contents: filledTemplates.graphqlDeleteMutationTemplate,
     },
     {
       title: "Model Type",
       path: `app/graphql/types/${model_name}.rb`,
-      contents: modelType,
+      contents: filledTemplates.graphqlModelType,
     },
     {
       title: "React Form",
       path: `app/javascript/components/${model_name}/${ModelName}Form.js`,
-      contents: reactForm,
+      contents: filledTemplates.reactForm,
     },
     {
       title: "React GraphQL Create Wrapper",
       path: `app/javascript/components/${model_name}/Create${ModelName}.js`,
-      contents: reactCreateGraphqlWrapper,
+      contents: filledTemplates.reactGraphqlCreateWrapper,
     },
     {
       title: "React GraphQL Update Wrapper",
       path: `app/javascript/components/${model_name}/Update${ModelName}.js`,
-      contents: reactUpdateGraphqlWrapper,
+      contents: filledTemplates.reactGraphqlUpdateWrapper,
     },
   ];
 
@@ -159,7 +212,9 @@ export default function Home() {
   return (
     <>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(
+          onSubmit(getValues, setFilledTemplates, argumentCount)
+        )}
         style={{
           margin: "5px 0",
           display: "flex",
@@ -171,15 +226,15 @@ export default function Home() {
       >
         <input
           type="text"
-          placeholder="Model name"
-          {...register("modelName")}
+          placeholder="model_name"
+          {...register("model_name")}
         />
         {range(0, argumentCount).map((index) => (
           <div key={index}>
             <input
               type="text"
-              placeholder={`Argument ${index} name`}
-              {...register(`argument${index}Name`)}
+              placeholder={`argument_${index}_name`}
+              {...register(`argument_${index}_name`)}
             />
             <select
               {...register(`argument${index}Type`)}
