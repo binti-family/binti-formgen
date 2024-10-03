@@ -41,7 +41,9 @@ export default function Argumentz({ control, register }) {
               </option>
             ))}
           </select>
-          <button onClick={() => remove(index)}>X</button>
+          <button onClick={() => remove(index)} tabIndex={-1}>
+            X
+          </button>
         </div>
       ))}
       <button onClick={() => append({ name: "", type: "String" })}>
