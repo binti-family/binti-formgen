@@ -7,6 +7,7 @@ import Files from "./Files";
 import Argumentz from "./Argumentz";
 import { toCamelCase } from "./utils";
 import { useEffect } from "react";
+import TextBox from "./TextBox";
 
 const zip = new JSZip();
 
@@ -89,18 +90,11 @@ export default function Home() {
         <button onClick={generateZip}>💾 Download Zip</button>
         <button onClick={clearForm}>🗑️ Clear Form</button>
       </div>
-      <div>Line to add to app/graphql/types/query_type.rb:</div>
-      <textarea
-        style={{ height: "30px", width: "500px" }}
-        value={`query(Queries::${ModelName})`}
-      />
-      <div>Lines to add to app/graphql/types/mutation_type.rb:</div>
-      <textarea
-        style={{ height: "50px", width: "700px" }}
-        value={`field(:create_${model_name}, mutation: Mutations::Create${ModelName})
-    field(:update_${model_name}, mutation: Mutations::Update${ModelName})
-        `}
-      />
+      <TextBox title="Line to add to app/graphql/types/query_type.rb">{`query(Queries::${ModelName})`}</TextBox>
+      <TextBox title="Lines to add to app/graphql/types/mutation_type.rb">
+        {`field(:create_${model_name}, mutation: Mutations::Create${ModelName})
+    field(:update_${model_name}, mutation: Mutations::Update${ModelName})`}
+      </TextBox>
       <Files model_name={model_name} argumentz={argumentz} />
     </div>
   );

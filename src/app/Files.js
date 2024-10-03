@@ -17,7 +17,7 @@ import queryTemplate from "./templates/graphql/queryTemplate";
 import PropTypes from "prop-types";
 import { toCamelCase } from "./utils";
 import { useState } from "react";
-import { useMediaQuery } from "@uidotdev/usehooks";
+import TextBox from "./TextBox";
 
 const defaultSeparator = "\n    ";
 
@@ -145,44 +145,12 @@ const generateFiles = (formData) => {
 };
 
 const Files = ({ model_name, argumentz }) => {
-  const [copied, setCopied] = useState(null);
-  const isDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
-  const handleCopy = (content, title) => {
-    navigator.clipboard.writeText(content).then(() => {
-      setCopied(title);
-      setTimeout(() => setCopied(null), 2000); // Reset after 2 seconds
-    });
-  };
-
   return (
     <>
       {generateFiles({ model_name, argumentz }).map((file) => (
-        <div
-          key={file.title}
-          style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-        >
-          <div>{file.title}:</div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <div>path: {file.path}</div>
-            {copied === file.title && <span>Copied!</span>}
-            <button onClick={() => handleCopy(file.contents, file.title)}>
-              📋 Copy to Clipboard
-            </button>
-          </div>
-          <pre
-            style={{
-              width: "700px",
-              whiteSpace: "pre-wrap",
-              backgroundColor: isDarkMode ? "#333333" : "#ffffff",
-              color: isDarkMode ? "#ffffff" : "#000000",
-              border: "1px solid grey",
-            }}
-            contentEditable
-          >
-            <code>{file.contents}</code>
-          </pre>
-        </div>
+        <TextBox title={file.title} subTitle={`path: ${file.path}`}>
+          {file.contents}
+        </TextBox>
       ))}
     </>
   );
