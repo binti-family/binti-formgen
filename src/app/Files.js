@@ -167,7 +167,7 @@ const Files = ({ model_name, argumentz }) => {
             <div>path: {file.path}</div>
             {copied === file.title && <span>Copied!</span>}
             <button onClick={() => handleCopy(file.contents, file.title)}>
-              Copy to Clipboard
+              📋 Copy to Clipboard
             </button>
           </div>
           <textarea style={textAreaStyle} value={file.contents} readOnly />
