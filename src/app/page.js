@@ -6,6 +6,7 @@ import { saveAs } from "file-saver";
 import Files from "./Files";
 import Argumentz from "./Argumentz";
 import { toCamelCase } from "./utils";
+import { useEffect } from "react";
 
 const zip = new JSZip();
 
@@ -29,7 +30,7 @@ export default function Home() {
     unescape(queryParameters.arguments || "[]")
   );
 
-  const { register, control } = useForm({
+  const { register, control, setValue } = useForm({
     defaultValues: {
       model_name: queryParameters.modelName || "",
       argumentz: initialArguments,
@@ -42,9 +43,20 @@ export default function Home() {
   const modelName = toCamelCase(model_name || "");
   const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
-  const url = new URL(window.location.href);
-  url.search = `modelName=${modelName}&arguments=${JSON.stringify(argumentz)}`;
-  window.history.pushState({}, "", url);
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.search = `modelName=${modelName}&arguments=${JSON.stringify(
+      argumentz
+    )}`;
+    window.history.pushState({}, "", url);
+  }, [modelName, argumentz]);
+
+  const clearForm = () => {
+    if (confirm("You sure about that? 🤔")) {
+      setValue("model_name", "");
+      setValue("argumentz", []);
+    }
+  };
 
   return (
     <>
@@ -64,7 +76,10 @@ export default function Home() {
           {...register("model_name")}
         />
         <Argumentz control={control} register={register} />
-        <button onClick={generateZip}> Download Zip </button>
+        <button onClick={generateZip}>💾 Download Zip</button>
+        <button onClick={clearForm} style={{ alignSelf: "end" }}>
+          🗑️ Clear Form
+        </button>
       </div>
       <div>Line to add to app/graphql/types/query_type.rb:</div>
       <textarea

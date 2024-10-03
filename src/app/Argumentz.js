@@ -41,7 +41,7 @@ export default function Argumentz({ control, register }) {
         </div>
       ))}
       <button onClick={() => append({ name: "", type: "String" })}>
-        Add Argument
+        ➕ Add Argument
       </button>
     </>
   );
