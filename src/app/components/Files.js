@@ -1,6 +1,5 @@
 "use client";
 
-import tagger from "../tagger";
 import graphqlCreateMutationTemplate from "../templates/graphql/mutations/create";
 import graphqlUpdateMutationTemplate from "../templates/graphql/mutations/update";
 import graphqlDeleteMutationTemplate from "../templates/graphql/mutations/delete";
@@ -15,7 +14,7 @@ import reactInputDateTemplate from "../templates/react/inputs/date";
 import reactInputCheckboxTemplate from "../templates/react/inputs/checkbox";
 import queryTemplate from "../templates/graphql/query";
 import PropTypes from "prop-types";
-import { toCamelCase } from "../utils";
+import { applyTags, toCamelCase } from "../utils";
 import TextBox from "./TextBox";
 
 const defaultSeparator = "\n    ";
@@ -23,7 +22,7 @@ const defaultSeparator = "\n    ";
 const buildArguments = ({ argumentz, getTemplate }) =>
   argumentz
     .map((argument, index) =>
-      tagger(
+      applyTags(
         {
           argumentName: toCamelCase(argument.name),
           argument_name: argument.name,
@@ -94,7 +93,7 @@ const generateFiles = (formData) => {
   }).reduce(
     (acc, [key, template]) => ({
       ...acc,
-      [key]: tagger(formData, template).trim(),
+      [key]: applyTags(formData, template).trim(),
     }),
     {}
   );
