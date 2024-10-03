@@ -18,11 +18,7 @@ import { toCamelCase } from "./utils";
 
 const defaultSeparator = "\n    ";
 
-const buildArguments = ({
-  argumentz,
-  getTemplate,
-  separator = defaultSeparator,
-}) =>
+const buildArguments = ({ argumentz, getTemplate }) =>
   argumentz
     .map((argument, index) =>
       tagger(
@@ -34,7 +30,7 @@ const buildArguments = ({
         getTemplate(index)
       )
     )
-    .join(separator);
+    .join(defaultSeparator);
 
 const inputTypesToTemplates = {
   String: reactInputTextTemplate,

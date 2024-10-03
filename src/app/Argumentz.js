@@ -25,6 +25,7 @@ export default function Argumentz({ control, register }) {
           <input
             type="text"
             placeholder={`argument_${index}_name`}
+            autoFocus
             {...register(`argumentz.${index}.name`)}
           />
           <select
