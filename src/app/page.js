@@ -120,20 +120,22 @@ const onSubmit =
     );
   };
 
-export default function Home() {
-  const queryParameters = window.location.search
+const getQueryParameters = () =>
+  window.location.search
     .replace("?", "")
     .split("&")
     .map((param) => param.split("="))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-  const argumentz = JSON.parse(unescape(queryParameters.arguments));
+export default function Home() {
+  const queryParameters = getQueryParameters();
+  const initialArguments = JSON.parse(unescape(queryParameters.arguments));
 
-  const [argumentCount, setArgumentCount] = useState(argumentz.length);
+  const [argumentCount, setArgumentCount] = useState(initialArguments.length);
   const [filledTemplates, setFilledTemplates] = useState({});
 
   const defaultValues = {
-    ...argumentz.reduce(
+    ...initialArguments.reduce(
       (acc, arg, index) => ({
         ...acc,
         [`argument_${index}_name`]: arg.name,
