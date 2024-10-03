@@ -59,6 +59,17 @@ export default function Home() {
     }
   };
 
+  const showImportModal = () => {
+    const importString = prompt("Paste the import string here");
+    if (importString) {
+      const argumentNamez = importString.split(/\s+/);
+      setValue(
+        "argumentz",
+        argumentNamez.map((name) => ({ name, type: "String" }))
+      );
+    }
+  };
+
   return (
     <div
       style={{
@@ -89,6 +100,7 @@ export default function Home() {
       >
         <button onClick={generateZip}>💾 Download Zip</button>
         <button onClick={clearForm}>🗑️ Clear Form</button>
+        <button onClick={showImportModal}>📤 Import</button>
       </div>
       <TextBox title="Line to add to app/graphql/types/query_type.rb">{`query(Queries::${ModelName})`}</TextBox>
       <TextBox title="Lines to add to app/graphql/types/mutation_type.rb">
