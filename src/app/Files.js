@@ -17,6 +17,7 @@ import queryTemplate from "./templates/graphql/queryTemplate";
 import PropTypes from "prop-types";
 import { toCamelCase } from "./utils";
 import { useState } from "react";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 const defaultSeparator = "\n    ";
 
@@ -145,6 +146,7 @@ const generateFiles = (formData) => {
 
 const Files = ({ model_name, argumentz }) => {
   const [copied, setCopied] = useState(null);
+  const isDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const handleCopy = (content, title) => {
     navigator.clipboard.writeText(content).then(() => {
@@ -172,7 +174,8 @@ const Files = ({ model_name, argumentz }) => {
             style={{
               width: "700px",
               whiteSpace: "pre-wrap",
-              backgroundColor: "#333333",
+              backgroundColor: isDarkMode ? "#333333" : "#ffffff",
+              color: isDarkMode ? "#ffffff" : "#000000",
               border: "1px solid grey",
             }}
             contentEditable
