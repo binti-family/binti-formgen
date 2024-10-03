@@ -4,7 +4,7 @@ export default `module Types
 
     description("A generated type for {model_name}")
     field(:id, ID, null: true)
-    {fields}
+    {graphqlFields}
   end
 end
 

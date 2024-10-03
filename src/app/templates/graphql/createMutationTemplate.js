@@ -1,7 +1,7 @@
 export default `
 module Mutations
   class Create{ModelName} < Mutations::BaseMutation
-    {arguments}
+    {mutationArguments}
 
     # response field
     field(:{model_name}, Types::{ModelName}, null: false)
