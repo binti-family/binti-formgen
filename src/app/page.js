@@ -144,8 +144,6 @@ export default function Home() {
     model_name: toSnakeCase(queryParameters.modelName || ""),
   };
 
-  console.log(defaultValues);
-
   const { register, handleSubmit, getValues } = useForm({ defaultValues });
 
   const model_name = getValues("model_name");
