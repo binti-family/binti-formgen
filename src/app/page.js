@@ -24,18 +24,17 @@ const zip = new JSZip();
 const defaultSeparator = "\n    ";
 
 const buildArguments = ({
-  argumentCount,
-  formData,
+  argumentz,
   getTemplate,
   separator = defaultSeparator,
 }) =>
-  range(0, argumentCount)
-    .map((index) =>
+  argumentz
+    .map((argument, index) =>
       tagger(
         {
-          argumentName: toCamelCase(formData[`argument_${index}_name`]),
-          argument_name: formData[`argument_${index}_name`],
-          argumentType: toCamelCase(formData[`argument${index}Type`]),
+          argumentName: toCamelCase(argument.name),
+          argument_name: argument.name,
+          argumentType: toCamelCase(argument.type),
         },
         getTemplate(index)
       )
@@ -52,73 +51,58 @@ const inputTypesToTemplates = {
   Integer: reactInputTextTemplate,
 };
 
-const onSubmit =
-  (getValues, setFilledTemplates, argumentCount) => (formData) => {
-    const model_name = getValues("model_name");
-    const modelName = toCamelCase(model_name || "");
-    const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
-    const argumentz = range(0, argumentCount).map((index) => ({
-      name: formData[`argument_${index}_name`],
-      type: formData[`argument${index}Type`],
-    }));
+const onSubmit = (getValues, setFilledTemplates, argumentz) => (formData) => {
+  const model_name = getValues("model_name");
+  const modelName = toCamelCase(model_name || "");
+  const ModelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
 
-    const url = new URL(window.location.href);
-    url.search = `modelName=${modelName}&arguments=${JSON.stringify(
-      argumentz
-    )}`;
-    window.history.pushState({}, "", url);
+  const url = new URL(window.location.href);
+  url.search = `modelName=${modelName}&arguments=${JSON.stringify(argumentz)}`;
+  window.history.pushState({}, "", url);
 
-    const argumentNames = range(0, argumentCount).map((index) =>
-      toCamelCase(formData[`argument_${index}_name`])
-    );
+  const argumentNames = argumentz.map((argument) => toCamelCase(argument.name));
 
-    formData = {
-      ...formData,
-      modelName,
-      ModelName,
-      model_name,
-      argument_names: range(0, argumentCount).map(
-        (index) => formData[`argument_${index}_name`]
-      ),
-      argumentNames,
-      argumentNamesString: argumentNames.join(defaultSeparator),
-      arguments: buildArguments({
-        argumentCount,
-        formData,
-        getTemplate: () => mutationArgumentTemplate,
-      }),
-      fields: buildArguments({
-        argumentCount,
-        formData,
-        getTemplate: () => graphqlFieldTemplate,
-      }),
-      reactInputs: buildArguments({
-        argumentCount,
-        formData,
-        getTemplate: (index) =>
-          inputTypesToTemplates[formData[`argument${index}Type`]],
-      }),
-    };
-
-    setFilledTemplates(
-      Object.entries({
-        query: queryTemplate,
-        graphqlCreateMutation: graphqlCreateMutationTemplate,
-        graphqlUpdateMutation: graphqlUpdateMutationTemplate,
-        graphqlDeleteMutation: graphqlDeleteMutationTemplate,
-        graphqlModelType: graphqlTypeTemplate,
-        reactForm: reactFormComponentTemplate,
-        reactGraphqlCreateWrapper: reactGraphqlCreateWrapperTemplate,
-        reactGraphqlUpdateWrapper: reactGraphqlUpdateWrapperTemplate,
-      }).reduce(
-        (acc, [key, template]) => ({
-          ...acc,
-          [key]: tagger(formData, template).trim(),
-        }),
-        {}
-      )
-    );
+  formData = {
+    ...formData,
+    modelName,
+    ModelName,
+    model_name,
+    argument_names: argumentz.map((argument) => argument.name),
+    argumentNames,
+    argumentNamesString: argumentNames.join(defaultSeparator),
+    arguments: buildArguments({
+      argumentz,
+      getTemplate: () => mutationArgumentTemplate,
+    }),
+    fields: buildArguments({
+      argumentz,
+      getTemplate: () => graphqlFieldTemplate,
+    }),
+    reactInputs: buildArguments({
+      argumentz,
+      getTemplate: (index) => inputTypesToTemplates[argumentz[index].type],
+    }),
   };
+
+  setFilledTemplates(
+    Object.entries({
+      query: queryTemplate,
+      graphqlCreateMutation: graphqlCreateMutationTemplate,
+      graphqlUpdateMutation: graphqlUpdateMutationTemplate,
+      graphqlDeleteMutation: graphqlDeleteMutationTemplate,
+      graphqlModelType: graphqlTypeTemplate,
+      reactForm: reactFormComponentTemplate,
+      reactGraphqlCreateWrapper: reactGraphqlCreateWrapperTemplate,
+      reactGraphqlUpdateWrapper: reactGraphqlUpdateWrapperTemplate,
+    }).reduce(
+      (acc, [key, template]) => ({
+        ...acc,
+        [key]: tagger(formData, template).trim(),
+      }),
+      {}
+    )
+  );
+};
 
 const getQueryParameters = () =>
   window.location.search
@@ -131,22 +115,15 @@ export default function Home() {
   const queryParameters = getQueryParameters();
   const initialArguments = JSON.parse(unescape(queryParameters.arguments));
 
-  const [argumentCount, setArgumentCount] = useState(initialArguments.length);
+  const [argumentz, setArgumentz] = useState(initialArguments);
   const [filledTemplates, setFilledTemplates] = useState({});
 
-  const defaultValues = {
-    ...initialArguments.reduce(
-      (acc, arg, index) => ({
-        ...acc,
-        [`argument_${index}_name`]: arg.name,
-        [`argument${index}Type`]: arg.type,
-      }),
-      {}
-    ),
-    model_name: toSnakeCase(queryParameters.modelName || ""),
-  };
-
-  const { register, handleSubmit, getValues } = useForm({ defaultValues });
+  const { register, handleSubmit, getValues } = useForm({
+    defaultValues: {
+      model_name: toSnakeCase(queryParameters.modelName || ""),
+      argumentz: initialArguments,
+    },
+  });
 
   const model_name = getValues("model_name");
   const modelName = toCamelCase(model_name || "");
@@ -208,7 +185,7 @@ export default function Home() {
     <>
       <form
         onSubmit={handleSubmit(
-          onSubmit(getValues, setFilledTemplates, argumentCount)
+          onSubmit(getValues, setFilledTemplates, argumentz)
         )}
         style={{
           margin: "5px 0",
@@ -224,15 +201,15 @@ export default function Home() {
           placeholder="model_name"
           {...register("model_name")}
         />
-        {range(0, argumentCount).map((index) => (
-          <div key={index}>
+        {argumentz.map((argument, index) => (
+          <div key={`${argument.name}-${argument.type}`}>
             <input
               type="text"
               placeholder={`argument_${index}_name`}
-              {...register(`argument_${index}_name`)}
+              {...register(`argumentz.${index}.name`)}
             />
             <select
-              {...register(`argument${index}Type`)}
+              {...register(`argumentz.${index}.type`)}
               placeholder={`Argument ${index} type`}
             >
               {Object.keys(inputTypesToTemplates).map((type) => (
@@ -243,7 +220,9 @@ export default function Home() {
             </select>
           </div>
         ))}
-        <button onClick={() => setArgumentCount(argumentCount + 1)}>
+        <button
+          onClick={() => setArgumentz([...arguments, { name: "", type: "" }])}
+        >
           Add Argument
         </button>
         <button type="submit">Submit</button>
