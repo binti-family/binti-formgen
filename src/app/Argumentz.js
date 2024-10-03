@@ -13,7 +13,7 @@ const inputTypesToTemplates = {
 };
 
 export default function Argumentz({ control, register }) {
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: "argumentz",
   });
@@ -41,6 +41,7 @@ export default function Argumentz({ control, register }) {
               </option>
             ))}
           </select>
+          <button onClick={() => remove(index)}>❌</button>
         </div>
       ))}
       <button onClick={() => append({ name: "", type: "String" })}>
