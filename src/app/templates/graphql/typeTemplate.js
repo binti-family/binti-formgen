@@ -1,7 +1,4 @@
-export default `
-# typed: strict
-
-module Types
+export default `module Types
   class {ModelName} < BaseObject
     implements(Types::RailsModelInterface)
 

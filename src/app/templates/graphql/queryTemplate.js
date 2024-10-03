@@ -1,6 +1,4 @@
-export default `# typed: true
-
-module Queries
+export default `module Queries
   class {ModelName} < BaseQuery
     field(:{model_name})
     type(Types::{ModelName})
