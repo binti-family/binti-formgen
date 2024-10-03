@@ -1,4 +1,5 @@
 "use client";
+
 import tagger from "./tagger";
 import graphqlCreateMutationTemplate from "./templates/graphql/createMutationTemplate";
 import graphqlUpdateMutationTemplate from "./templates/graphql/updateMutationTemplate";
@@ -15,6 +16,7 @@ import reactInputCheckboxTemplate from "./templates/react/inputCheckboxTemplate"
 import queryTemplate from "./templates/graphql/queryTemplate";
 import PropTypes from "prop-types";
 import { toCamelCase } from "./utils";
+import { useState } from "react";
 
 const defaultSeparator = "\n    ";
 
@@ -141,19 +143,39 @@ const generateFiles = (formData) => {
   ];
 };
 
-const textAreaStyle = { height: "500px", width: "700px" };
+const textAreaStyle = { height: "250px", width: "700px" };
 
-const Files = ({ model_name, argumentz }) => (
-  <>
-    {generateFiles({ model_name, argumentz }).map((file) => (
-      <div key={file.title}>
-        <div>{file.title}:</div>
-        <div>path: {file.path}</div>
-        <textarea style={textAreaStyle} value={file.contents} readOnly />
-      </div>
-    ))}
-  </>
-);
+const Files = ({ model_name, argumentz }) => {
+  const [copied, setCopied] = useState(null);
+
+  const handleCopy = (content, title) => {
+    navigator.clipboard.writeText(content).then(() => {
+      setCopied(title);
+      setTimeout(() => setCopied(null), 2000); // Reset after 2 seconds
+    });
+  };
+
+  return (
+    <>
+      {generateFiles({ model_name, argumentz }).map((file) => (
+        <div
+          key={file.title}
+          style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+        >
+          <div>{file.title}:</div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div>path: {file.path}</div>
+            {copied === file.title && <span>Copied!</span>}
+            <button onClick={() => handleCopy(file.contents, file.title)}>
+              Copy to Clipboard
+            </button>
+          </div>
+          <textarea style={textAreaStyle} value={file.contents} readOnly />
+        </div>
+      ))}
+    </>
+  );
+};
 
 Files.propTypes = {
   model_name: PropTypes.string,
