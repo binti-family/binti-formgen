@@ -1,9 +1,9 @@
 "use client";
 
 import { useFieldArray } from "react-hook-form";
-import reactInputTextTemplate from "./templates/react/inputs/text";
-import reactInputDateTemplate from "./templates/react/inputs/date";
-import reactInputCheckboxTemplate from "./templates/react/inputs/checkbox";
+import reactInputTextTemplate from "../templates/react/inputs/text";
+import reactInputDateTemplate from "../templates/react/inputs/date";
+import reactInputCheckboxTemplate from "../templates/react/inputs/checkbox";
 
 const inputTypesToTemplates = {
   String: reactInputTextTemplate,

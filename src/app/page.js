@@ -3,11 +3,11 @@
 import { useForm, useWatch } from "react-hook-form";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import Files from "./Files";
-import Argumentz from "./Argumentz";
+import Files from "./components/Files";
+import Argumentz from "./components/Argumentz";
 import { toCamelCase } from "./utils";
 import { useEffect } from "react";
-import TextBox from "./TextBox";
+import TextBox from "./components/TextBox";
 
 const zip = new JSZip();
 
