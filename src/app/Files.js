@@ -1,16 +1,16 @@
 "use client";
 
 import tagger from "./tagger";
-import graphqlCreateMutationTemplate from "./templates/graphql/createMutation";
-import graphqlUpdateMutationTemplate from "./templates/graphql/updateMutation";
-import graphqlDeleteMutationTemplate from "./templates/graphql/deleteMutation";
+import graphqlCreateMutationTemplate from "./templates/graphql/mutations/create";
+import graphqlUpdateMutationTemplate from "./templates/graphql/mutations/update";
+import graphqlDeleteMutationTemplate from "./templates/graphql/mutations/delete";
 import graphqlTypeTemplate from "./templates/graphql/type";
-import reactFormComponentTemplate from "./templates/react/formComponent";
-import reactGraphqlCreateWrapperTemplate from "./templates/react/graphql/createWrapper";
-import reactGraphqlUpdateWrapperTemplate from "./templates/react/graphql/updateWrapper";
+import reactFormComponentTemplate from "./templates/react/form";
+import reactGraphqlCreateWrapperTemplate from "./templates/react/graphqlWrappers/create";
+import reactGraphqlUpdateWrapperTemplate from "./templates/react/graphqlWrappers/update";
 import reactInputTextTemplate from "./templates/react/inputText";
 import graphqlFieldTemplate from "./templates/graphql/field";
-import mutationArgumentTemplate from "./templates/graphql/mutationArgument";
+import mutationArgumentTemplate from "./templates/graphql/mutations/argument";
 import reactInputDateTemplate from "./templates/react/inputDate";
 import reactInputCheckboxTemplate from "./templates/react/inputCheckbox";
 import queryTemplate from "./templates/graphql/query";
