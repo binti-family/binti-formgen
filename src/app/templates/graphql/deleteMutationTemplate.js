@@ -2,7 +2,7 @@ export default `# typed: true
 
 module Mutations
   class Delete{ModelName} < Mutations::BaseMutation
-    {arguments}
+    argument(:id, ID, required: true)
 
     field(:{model_name}, ID, null: false)
 
@@ -12,7 +12,7 @@ module Mutations
 
       ::TransactionRetrier.retry { {mode_name}.destroy! }
 
-      { role_id: role_id }
+      { {model_name}: {model_name} }
 
     rescue ActiveRecord::DeleteRestrictionError
       raise GraphQL::ExecutionError, "Invalid Operation"

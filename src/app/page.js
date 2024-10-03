@@ -178,7 +178,7 @@ export default function Home() {
     {
       title: "Delete Mutation Template",
       path: `app/graphql/mutations/delete_${model_name}.rb`,
-      contents: filledTemplates.graphqlDeleteMutationTemplate,
+      contents: filledTemplates.graphqlDeleteMutation,
     },
     {
       title: "Model Type",
