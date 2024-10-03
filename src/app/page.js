@@ -76,10 +76,17 @@ export default function Home() {
           {...register("model_name")}
         />
         <Argumentz control={control} register={register} />
-        <button onClick={generateZip}>💾 Download Zip</button>
-        <button onClick={clearForm} style={{ alignSelf: "end" }}>
-          🗑️ Clear Form
-        </button>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
+            gap: "20px",
+            width: "700px",
+          }}
+        >
+          <button onClick={generateZip}>💾 Download Zip</button>
+          <button onClick={clearForm}>🗑️ Clear Form</button>
+        </div>
       </div>
       <div>Line to add to app/graphql/types/query_type.rb:</div>
       <textarea
