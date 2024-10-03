@@ -19,17 +19,25 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import queryTemplate from "./templates/graphql/queryTemplate";
 
-const buildArguments = (argumentCount, formData, template, separator) =>
+const zip = new JSZip();
+
+const defaultSeparator = "\n    ";
+
+const buildArguments = ({
+  argumentCount,
+  formData,
+  getTemplate,
+  separator = defaultSeparator,
+}) =>
   range(0, argumentCount)
     .map((index) =>
       tagger(
         {
-          argumentName: formData[`argument_${index}_name`],
-          argument_name: toSnakeCase(formData[`argument_${index}_name`]),
-          argumentType: formData[`argument${index}Type`],
-          argument_type: toSnakeCase(formData[`argument${index}Type`]),
+          argumentName: toCamelCase(formData[`argument_${index}_name`]),
+          argument_name: formData[`argument_${index}_name`],
+          argumentType: toCamelCase(formData[`argument${index}Type`]),
         },
-        template
+        getTemplate(index)
       )
     )
     .join(separator);
@@ -43,8 +51,6 @@ const inputTypesToTemplates = {
   Boolean: reactInputCheckboxTemplate,
   Integer: reactInputTextTemplate,
 };
-
-const zip = new JSZip();
 
 const onSubmit =
   (getValues, setFilledTemplates, argumentCount) => (formData) => {
@@ -63,9 +69,7 @@ const onSubmit =
     window.history.pushState({}, "", url);
 
     const argumentNames = range(0, argumentCount).map((index) =>
-      formData[`argument_${index}_name`]
-        .replace(/([a-z])_([A-Z])/g, "$1U$2")
-        .toLowerCase()
+      toCamelCase(formData[`argument_${index}_name`])
     );
 
     formData = {
@@ -77,32 +81,23 @@ const onSubmit =
         (index) => formData[`argument_${index}_name`]
       ),
       argumentNames,
-      argumentNamesString: argumentNames.join("\n    "),
-      arguments: buildArguments(
+      argumentNamesString: argumentNames.join(defaultSeparator),
+      arguments: buildArguments({
         argumentCount,
         formData,
-        mutationArgumentTemplate,
-        "\n    "
-      ),
-      fields: buildArguments(
+        getTemplate: () => mutationArgumentTemplate,
+      }),
+      fields: buildArguments({
         argumentCount,
         formData,
-        graphqlFieldTemplate,
-        "\n    "
-      ),
-      reactInputs: range(0, argumentCount)
-        .map((index) =>
-          tagger(
-            {
-              argumentName: formData[`argument_${index}_name`],
-              argument_name: toSnakeCase(formData[`argument_${index}_name`]),
-              argumentType: formData[`argument${index}Type`],
-              argument_type: toSnakeCase(formData[`argument${index}Type`]),
-            },
-            inputTypesToTemplates[formData[`argument${index}Type`]]
-          )
-        )
-        .join("\n    "),
+        getTemplate: () => graphqlFieldTemplate,
+      }),
+      reactInputs: buildArguments({
+        argumentCount,
+        formData,
+        getTemplate: (index) =>
+          inputTypesToTemplates[formData[`argument${index}Type`]],
+      }),
     };
 
     setFilledTemplates(
@@ -142,7 +137,7 @@ export default function Home() {
       (acc, arg, index) => ({
         ...acc,
         [`argument_${index}_name`]: arg.name,
-        [`argument_${index}_type`]: arg.type,
+        [`argument${index}Type`]: arg.type,
       }),
       {}
     ),

@@ -1,1 +1,1 @@
-export default "argument(:{argumentName}, {argumentType}, required: false)";
+export default "argument(:{argument_name}, {argumentType}, required: false)";
