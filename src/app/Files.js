@@ -1,22 +1,21 @@
 "use client";
 
 import tagger from "./tagger";
-import graphqlCreateMutationTemplate from "./templates/graphql/createMutationTemplate";
-import graphqlUpdateMutationTemplate from "./templates/graphql/updateMutationTemplate";
-import graphqlDeleteMutationTemplate from "./templates/graphql/deleteMutationTemplate";
-import graphqlTypeTemplate from "./templates/graphql/typeTemplate";
-import reactFormComponentTemplate from "./templates/react/formComponentTemplate";
-import reactGraphqlCreateWrapperTemplate from "./templates/react/graphql/createWrapperTemplate";
-import reactGraphqlUpdateWrapperTemplate from "./templates/react/graphql/updateWrapperTemplate";
-import reactInputTextTemplate from "./templates/react/inputTextTemplate";
-import graphqlFieldTemplate from "./templates/graphql/fieldTemplate";
-import mutationArgumentTemplate from "./templates/graphql/mutationArgumentTemplate";
-import reactInputDateTemplate from "./templates/react/inputDateTemplate";
-import reactInputCheckboxTemplate from "./templates/react/inputCheckboxTemplate";
-import queryTemplate from "./templates/graphql/queryTemplate";
+import graphqlCreateMutationTemplate from "./templates/graphql/createMutation";
+import graphqlUpdateMutationTemplate from "./templates/graphql/updateMutation";
+import graphqlDeleteMutationTemplate from "./templates/graphql/deleteMutation";
+import graphqlTypeTemplate from "./templates/graphql/type";
+import reactFormComponentTemplate from "./templates/react/formComponent";
+import reactGraphqlCreateWrapperTemplate from "./templates/react/graphql/createWrapper";
+import reactGraphqlUpdateWrapperTemplate from "./templates/react/graphql/updateWrapper";
+import reactInputTextTemplate from "./templates/react/inputText";
+import graphqlFieldTemplate from "./templates/graphql/field";
+import mutationArgumentTemplate from "./templates/graphql/mutationArgument";
+import reactInputDateTemplate from "./templates/react/inputDate";
+import reactInputCheckboxTemplate from "./templates/react/inputCheckbox";
+import queryTemplate from "./templates/graphql/query";
 import PropTypes from "prop-types";
 import { toCamelCase } from "./utils";
-import { useState } from "react";
 import TextBox from "./TextBox";
 
 const defaultSeparator = "\n    ";
