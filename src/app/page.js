@@ -70,11 +70,14 @@ export default function Home() {
           alignItems: "flex-start",
         }}
       >
-        <input
-          type="text"
-          placeholder="model_name"
-          {...register("model_name")}
-        />
+        <div>
+          <input
+            type="text"
+            placeholder="model_name"
+            {...register("model_name")}
+          />
+          <span muted>(use snake_case for all inputs)</span>
+        </div>
         <Argumentz control={control} register={register} />
         <div
           style={{
