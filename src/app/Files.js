@@ -143,8 +143,6 @@ const generateFiles = (formData) => {
   ];
 };
 
-const textAreaStyle = { height: "250px", width: "700px" };
-
 const Files = ({ model_name, argumentz }) => {
   const [copied, setCopied] = useState(null);
 
@@ -170,7 +168,17 @@ const Files = ({ model_name, argumentz }) => {
               📋 Copy to Clipboard
             </button>
           </div>
-          <textarea style={textAreaStyle} value={file.contents} readOnly />
+          <pre
+            style={{
+              width: "700px",
+              whiteSpace: "pre-wrap",
+              backgroundColor: "#333333",
+              border: "1px solid grey",
+            }}
+            contentEditable
+          >
+            <code>{file.contents}</code>
+          </pre>
         </div>
       ))}
     </>
