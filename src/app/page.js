@@ -1,5 +1,4 @@
 "use client";
-import { range } from "ramda";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import tagger from "./tagger";
@@ -209,8 +208,8 @@ export default function Home() {
               {...register(`argumentz.${index}.name`)}
             />
             <select
-              {...register(`argumentz.${index}.type`)}
               placeholder={`Argument ${index} type`}
+              {...register(`argumentz.${index}.type`)}
             >
               {Object.keys(inputTypesToTemplates).map((type) => (
                 <option key={type} value={type}>
