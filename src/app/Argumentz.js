@@ -41,7 +41,7 @@ export default function Argumentz({ control, register }) {
               </option>
             ))}
           </select>
-          <button onClick={() => remove(index)}>❌</button>
+          <button onClick={() => remove(index)}>X</button>
         </div>
       ))}
       <button onClick={() => append({ name: "", type: "String" })}>
