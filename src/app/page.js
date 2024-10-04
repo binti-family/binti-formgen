@@ -8,6 +8,7 @@ import Argumentz from "./components/Argumentz";
 import { toCamelCase } from "./utils";
 import { useEffect } from "react";
 import TextBox from "./components/TextBox";
+import generateFiles from "./services/generateFiles";
 
 const zip = new JSZip();
 
@@ -18,8 +19,10 @@ const getQueryParameters = () =>
     .map((param) => param.split("="))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-const generateZip = (files) => {
-  files.forEach((file) => zip.file(file.path, file.contents));
+const generateZip = (model_name, argumentz) => {
+  generateFiles({ model_name, argumentz }).forEach((file) =>
+    zip.file(file.path, file.contents)
+  );
   zip.generateAsync({ type: "blob" }).then((content) => {
     saveAs(content, "binti-formgen.zip");
   });
@@ -62,10 +65,21 @@ export default function Home() {
   const showImportModal = () => {
     const importString = prompt("Paste the import string here");
     if (importString) {
-      const argumentNamez = importString.split(/\s+/);
+      const argumentz = importString
+        .split(/\n+/)
+        .map((arg) => arg.split(/\s*:/));
       setValue(
         "argumentz",
-        argumentNamez.map((name) => ({ name, type: "String" }))
+        argumentz.map(([name, type = ""]) => ({
+          name,
+          type: type.includes("string")
+            ? "String"
+            : type.includes("date")
+            ? "GraphQL::Types::ISO8601Date"
+            : type.includes("bool")
+            ? "Boolean"
+            : "Integer",
+        }))
       );
     }
   };
@@ -98,7 +112,9 @@ export default function Home() {
           width: "700px",
         }}
       >
-        <button onClick={generateZip}>💾 Download Zip</button>
+        <button onClick={() => generateZip(model_name, argumentz)}>
+          💾 Download Zip
+        </button>
         <button onClick={clearForm}>🗑️ Clear Form</button>
         <button onClick={showImportModal}>📤 Import</button>
       </div>

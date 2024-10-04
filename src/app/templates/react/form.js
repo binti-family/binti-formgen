@@ -1,4 +1,4 @@
-export default `import { Flex, InputText } from "@heart/components";
+export default `import { Flex, InputText, InputDate, InputCheckbox } from "@heart/components";
 import PropTypes from "prop-types";
 
 import { translationWithRoot } from "@components/T";
