@@ -49,7 +49,7 @@ export default function Home() {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    url.search = `modelName=${modelName}&arguments=${JSON.stringify(
+    url.search = `modelName=${model_name}&arguments=${JSON.stringify(
       argumentz
     )}`;
     window.history.pushState({}, "", url);
@@ -67,7 +67,8 @@ export default function Home() {
     if (importString) {
       const argumentz = importString
         .split(/\n+/)
-        .map((arg) => arg.split(/\s*:/));
+        .map((arg) => arg.split(/\s*:/))
+        .map((pair) => pair.map((str) => str.trim()));
       setValue(
         "argumentz",
         argumentz.map(([name, type = ""]) => ({
