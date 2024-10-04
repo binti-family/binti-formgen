@@ -121,7 +121,8 @@ export default function Home() {
       <TextBox title="Line to add to app/graphql/types/query_type.rb">{`query(Queries::${ModelName})`}</TextBox>
       <TextBox title="Lines to add to app/graphql/types/mutation_type.rb">
         {`field(:create_${model_name}, mutation: Mutations::Create${ModelName})
-    field(:update_${model_name}, mutation: Mutations::Update${ModelName})`}
+    field(:update_${model_name}, mutation: Mutations::Update${ModelName})
+    field(:delete_${model_name}, mutation: Mutations::Delete${ModelName})`}
       </TextBox>
       <Files model_name={model_name} argumentz={argumentz} />
     </div>

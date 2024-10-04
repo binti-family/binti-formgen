@@ -13,6 +13,9 @@ import mutationArgumentTemplate from "../templates/graphql/mutations/argument";
 import reactInputDateTemplate from "../templates/react/inputs/date";
 import reactInputCheckboxTemplate from "../templates/react/inputs/checkbox";
 import queryTemplate from "../templates/graphql/query";
+import createServiceTemplate from "../templates/services/create";
+import updateServiceTemplate from "../templates/services/update";
+import deleteServiceTemplate from "../templates/services/delete";
 import { applyTags, toCamelCase } from "../utils";
 
 const defaultSeparator = "\n    ";
@@ -88,6 +91,9 @@ const generateFiles = (formData) => {
     reactForm: reactFormComponentTemplate,
     reactGraphqlCreateWrapper: reactGraphqlCreateWrapperTemplate,
     reactGraphqlUpdateWrapper: reactGraphqlUpdateWrapperTemplate,
+    createService: createServiceTemplate,
+    updateService: updateServiceTemplate,
+    deleteService: deleteServiceTemplate,
   }).reduce(
     (acc, [key, template]) => ({
       ...acc,
@@ -136,6 +142,21 @@ const generateFiles = (formData) => {
       title: "React GraphQL Update Wrapper",
       path: `app/javascript/components/${model_name}/Update${ModelName}.js`,
       contents: filledTemplates.reactGraphqlUpdateWrapper,
+    },
+    {
+      title: "Create Service",
+      path: `app/lib/services/${model_name}/create.rb`,
+      contents: filledTemplates.createService,
+    },
+    {
+      title: "Update Service",
+      path: `app/lib/services/${model_name}/update.rb`,
+      contents: filledTemplates.updateService,
+    },
+    {
+      title: "Delete Service",
+      path: `app/lib/services/${model_name}/delete.rb`,
+      contents: filledTemplates.deleteService,
     },
   ];
 };
