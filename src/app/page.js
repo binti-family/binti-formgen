@@ -24,7 +24,7 @@ const generateZip = (model_name, argumentz) => {
     zip.file(file.path, file.contents)
   );
   zip.generateAsync({ type: "blob" }).then((content) => {
-    saveAs(content, "binti-formgen.zip");
+    saveAs(content, `${model_name}.zip`);
   });
 };
 
