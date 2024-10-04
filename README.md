@@ -16,6 +16,8 @@ Open [http://localhost:1337](http://localhost:1337) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
+https://binti.slack.com/archives/CC3SSMDKP/p1728080268888629
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
