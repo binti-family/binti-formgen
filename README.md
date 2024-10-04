@@ -16,7 +16,7 @@ Open [http://localhost:1337](http://localhost:1337) with your browser to see the
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-https://binti.slack.com/archives/CC3SSMDKP/p1728080268888629
+[https://binti.slack.com/archives/CC3SSMDKP/p1728080268888629](https://binti.slack.com/files/U03GALV418D/F07R66BMVKJ/screen_recording_2024-10-04_at_2.54.55___pm.mov)
 
 ## Learn More
 
