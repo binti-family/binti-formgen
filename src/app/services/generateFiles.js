@@ -130,32 +130,32 @@ const generateFiles = (formData) => {
     },
     {
       title: "React Form",
-      path: `app/javascript/components/${model_name}/${ModelName}Form.js`,
+      path: `app/javascript/components/${model_name}s/${ModelName}Form.js`,
       contents: filledTemplates.reactForm,
     },
     {
       title: "React GraphQL Create Wrapper",
-      path: `app/javascript/components/${model_name}/Create${ModelName}.js`,
+      path: `app/javascript/components/${model_name}s/Create${ModelName}.js`,
       contents: filledTemplates.reactGraphqlCreateWrapper,
     },
     {
       title: "React GraphQL Update Wrapper",
-      path: `app/javascript/components/${model_name}/Update${ModelName}.js`,
+      path: `app/javascript/components/${model_name}s/Update${ModelName}.js`,
       contents: filledTemplates.reactGraphqlUpdateWrapper,
     },
     {
       title: "Create Service",
-      path: `app/lib/services/${model_name}/create.rb`,
+      path: `app/lib/services/${model_name}s/create.rb`,
       contents: filledTemplates.createService,
     },
     {
       title: "Update Service",
-      path: `app/lib/services/${model_name}/update.rb`,
+      path: `app/lib/services/${model_name}s/update.rb`,
       contents: filledTemplates.updateService,
     },
     {
       title: "Delete Service",
-      path: `app/lib/services/${model_name}/delete.rb`,
+      path: `app/lib/services/${model_name}s/delete.rb`,
       contents: filledTemplates.deleteService,
     },
   ];

@@ -10,7 +10,7 @@ import preventDefault from "@lib/preventDefault";
 
 import {ModelName}Form from "./{ModelName}Form";
 
-const { t } = translationWithRoot("{model_name}");
+const { t } = translationWithRoot("{model_name}s");
 
 const {ModelName}Fragment = gql\`
   fragment {ModelName} on {ModelName} {

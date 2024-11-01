@@ -8,7 +8,7 @@ import { translationWithRoot } from "@components/T";
 
 import preventDefault from "@lib/preventDefault";
 
-const { t } = translationWithRoot("{model_name}");
+const { t } = translationWithRoot("{model_name}s");
 
 const initialFormState = {};
 

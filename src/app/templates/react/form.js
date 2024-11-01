@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { translationWithRoot } from "@components/T";
 
-const { t } = translationWithRoot("{model_name}");
+const { t } = translationWithRoot("{model_name}s");
 
 const {ModelName}Form = ({ formState, setFormAttribute }) => (
   <Flex column>

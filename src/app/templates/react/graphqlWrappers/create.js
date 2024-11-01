@@ -8,11 +8,11 @@ import { translationWithRoot } from "@components/T";
 
 import preventDefault from "@lib/preventDefault";
 
-const { t } = translationWithRoot("{model_name}");
+const { t } = translationWithRoot("{model_name}s");
 
 const initialFormState = {};
 
-const create{ModelName}Mutation = gql\`
+const Create{ModelName}Mutation = gql\`
   mutation Create{ModelName}($input: Create{ModelName}Input!) {
     create{ModelName}(input: $input) {
       {modelName} {
@@ -25,7 +25,7 @@ const create{ModelName}Mutation = gql\`
 const Create{ModelName} = () => {
   const { formState, setFormAttribute } = useBintiForm(initialFormState);
 
-  const [create{ModelName}, { loading }] = useMutation(create{ModelName}Mutation);
+  const [create{ModelName}, { loading }] = useMutation(Create{ModelName}Mutation);
 
   const onSubmit = preventDefault(() =>
     create{ModelName}({
@@ -40,7 +40,7 @@ const Create{ModelName} = () => {
   return (
     <LoadingOverlay active={loading}>
       <SurfaceForm
-        title={t("{model_name}.title")}
+        title={t("title")}
         actions={<Actions />}
         onSubmit={onSubmit}
       >

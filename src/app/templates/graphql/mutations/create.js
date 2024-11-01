@@ -6,7 +6,7 @@ module Mutations
     # response field
     field(:{model_name}, Types::{ModelName}, null: false)
 
-    def resolve()
+    def resolve(args**)
       authorize(::{ModelName}, :create?)
 
       result = Services::{ModelName}s::Create.call(**args)
